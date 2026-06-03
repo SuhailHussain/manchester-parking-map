@@ -1,6 +1,6 @@
 # Manchester Parking Map
 
-Interactive map showing where you can park in Manchester city centre **right now** — with filters for time, cost, and how long you need to stay.
+Interactive map showing where you can park in Manchester city centre **right now**, with filters for time, cost, and how long you need to stay. The problem with this information on the Manchester council site is the map shows the zones but not the specific streets with bay parking. Tey list the streets with bays but on indivual pages meaning you have to click through dozens. Not the solution you want when you're in the city, trying to find where you can park.
 
 **[View live →](https://suhailhussain.github.io/manchester-parking-map/)**
 
