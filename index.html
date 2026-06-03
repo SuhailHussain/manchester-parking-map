@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manchester Parking</title>
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.3.2/dist/maplibre-gl.css" />
+  </head>
+  <body>
+    <div id="app">
+      <div id="map"></div>
+
+      <div id="filter-panel">
+        <div id="filter-header">
+          <span id="current-status"></span>
+          <button id="locate-btn" title="Use my location">&#9432;</button>
+        </div>
+
+        <div id="filter-row">
+          <label class="filter-label">When</label>
+          <div id="time-controls">
+            <button id="now-btn" class="active">Right now</button>
+            <div id="custom-time" hidden>
+              <input type="date" id="date-input" />
+              <input type="time" id="time-input" />
+            </div>
+          </div>
+        </div>
+
+        <div id="filter-row-2">
+          <div class="filter-group">
+            <label class="filter-label">Max cost</label>
+            <div class="btn-group" id="cost-group">
+              <button data-value="0" class="cost-btn">Free</button>
+              <button data-value="2" class="cost-btn">£2</button>
+              <button data-value="5" class="cost-btn">£5</button>
+              <button data-value="" class="cost-btn active">Any</button>
+            </div>
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-label">Duration</label>
+            <div class="btn-group" id="duration-group">
+              <button data-value="30" class="dur-btn">30m</button>
+              <button data-value="60" class="dur-btn active">1hr</button>
+              <button data-value="120" class="dur-btn">2hr</button>
+              <button data-value="180" class="dur-btn">3hr</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="legend">
+        <div class="legend-item"><span class="dot green"></span> Free / open</div>
+        <div class="legend-item"><span class="dot amber"></span> Paid parking</div>
+        <div class="legend-item"><span class="dot grey"></span> Over budget / full</div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

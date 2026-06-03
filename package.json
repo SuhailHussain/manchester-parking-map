@@ -1,0 +1,22 @@
+{
+  "name": "manchester-parking-map",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "bake-osm": "npx tsx scripts/bake-osm-data.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "vite": "^5.2.0",
+    "vitest": "^1.6.0",
+    "tsx": "^4.11.0"
+  },
+  "dependencies": {
+    "maplibre-gl": "^4.3.2"
+  }
+}

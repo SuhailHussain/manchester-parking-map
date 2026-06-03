@@ -1,0 +1,97 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "osmId": 783670,
+        "name": "Sidney Street",
+        "parkingLeft": "lane",
+        "parkingRight": null,
+        "parkingBoth": null,
+        "highway": "residential"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -2.2380009,
+            53.4711147
+          ],
+          [
+            -2.2378393,
+            53.4711615
+          ],
+          [
+            -2.2370139,
+            53.4714271
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osmId": 4353084,
+        "name": "Stretford Road",
+        "parkingLeft": "no",
+        "parkingRight": "street_side",
+        "parkingBoth": null,
+        "highway": "primary"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -2.2558716,
+            53.4660908
+          ],
+          [
+            -2.2551578,
+            53.4662288
+          ],
+          [
+            -2.2544127,
+            53.4663669
+          ],
+          [
+            -2.2535185,
+            53.4665387
+          ],
+          [
+            -2.2525187,
+            53.4667238
+          ],
+          [
+            -2.2520225,
+            53.4668222
+          ],
+          [
+            -2.2516404,
+            53.4668908
+          ],
+          [
+            -2.2514894,
+            53.4669187
+          ],
+          [
+            -2.2499343,
+            53.4672226
+          ],
+          [
+            -2.2498748,
+            53.4672342
+          ],
+          [
+            -2.2498277,
+            53.4672434
+          ],
+          [
+            -2.2495815,
+            53.4672897
+          ]
+        ]
+      }
+    }
+  ]
+}
