@@ -2,7 +2,9 @@
 
 Interactive map showing where you can park in Manchester city centre **right now** — with filters for time, cost, and how long you need to stay.
 
-![Manchester Parking Map](https://github.com/SuhailHussain/manchester-parking-map/raw/main/docs/screenshot.png)
+![Manchester Parking Map — overview](https://github.com/SuhailHussain/manchester-parking-map/raw/main/assets/mcr-parking.png)
+
+![Manchester Parking Map — detail](https://github.com/SuhailHussain/manchester-parking-map/raw/main/assets/mcr-parking2.png)
 
 ## What it shows
 
