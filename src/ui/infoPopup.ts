@@ -4,10 +4,16 @@ import { ZONE_TARIFFS } from '../zones/zoneDefinitions'
 
 let currentPopup: maplibregl.Popup | null = null
 
-export function showZonePopup(status: ZoneStatus, lngLat: maplibregl.LngLat, map: maplibregl.Map): void {
+export function showZonePopup(
+  status: ZoneStatus,
+  lngLat: maplibregl.LngLat,
+  map: maplibregl.Map,
+  streetName?: string,
+): void {
   if (currentPopup) currentPopup.remove()
 
   const tariff = ZONE_TARIFFS[status.zoneId]
+
   const stepsHtml = status.isFree
     ? ''
     : tariff.steps.map(s => {
@@ -17,10 +23,19 @@ export function showZonePopup(status: ZoneStatus, lngLat: maplibregl.LngLat, map
 
   const tariffsTable = status.isFree
     ? ''
-    : `<table class="popup-table"><thead><tr><th>Stay</th><th>Cost</th></tr></thead><tbody>${stepsHtml}</tbody></table>`
+    : `<table class="popup-table">
+        <thead><tr><th>Stay</th><th>Cost</th></tr></thead>
+        <tbody>${stepsHtml}</tbody>
+       </table>`
 
   const cost = (status.costForDuration as unknown as number) > 0 ? status.costForDuration : null
-  const statusBadge = `<span class="popup-badge" style="background:${status.color}">${status.isFree ? 'FREE' : status.exceedsMaxStay ? 'TOO LONG' : cost != null ? `£${cost.toFixed(2)}` : 'PAID'}</span>`
+  const statusBadge = `<span class="popup-badge" style="background:${status.color}">
+    ${status.isFree ? 'FREE' : status.exceedsMaxStay ? 'TOO LONG' : cost != null ? `£${cost.toFixed(2)}` : 'PAID'}
+  </span>`
+
+  const streetRow = streetName
+    ? `<p class="popup-street">📍 ${streetName}</p>`
+    : ''
 
   const html = `
     <div class="popup-inner">
@@ -28,13 +43,14 @@ export function showZonePopup(status: ZoneStatus, lngLat: maplibregl.LngLat, map
         ${statusBadge}
         <strong>${tariff.name}</strong>
       </div>
+      ${streetRow}
       <p class="popup-label">${status.label}</p>
       ${tariffsTable}
       <p class="popup-hint">Max stay: ${tariff.maxStayMinutes / 60}hr &middot; Mon–Sun 08:00–20:00</p>
     </div>
   `
 
-  currentPopup = new maplibregl.Popup({ closeButton: true, maxWidth: '280px' })
+  currentPopup = new maplibregl.Popup({ closeButton: true, maxWidth: '300px' })
     .setLngLat(lngLat)
     .setHTML(html)
     .addTo(map)

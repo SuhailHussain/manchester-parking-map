@@ -13,8 +13,8 @@ function applyFilters(filter: ParkingFilter): void {
   updateZoneColors(getAllZoneStatuses(filter))
 }
 
-function handleZoneClick(status: ZoneStatus, lngLat: maplibregl.LngLat): void {
-  showZonePopup(status, lngLat, currentMap)
+function handleZoneClick(status: ZoneStatus, lngLat: maplibregl.LngLat, streetName?: string): void {
+  showZonePopup(status, lngLat, currentMap, streetName)
 }
 
 async function main() {

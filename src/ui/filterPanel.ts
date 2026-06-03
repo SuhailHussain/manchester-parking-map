@@ -1,4 +1,5 @@
 import type { ParkingFilter } from '../types'
+import { BANK_HOLIDAYS } from '../zones/zoneDefinitions'
 
 export type FilterChangeCallback = (filter: ParkingFilter) => void
 
@@ -14,25 +15,77 @@ let refreshTimer: ReturnType<typeof setInterval> | null = null
 export function initFilterPanel(callback: FilterChangeCallback): void {
   onChange = callback
 
-  const nowBtn = document.getElementById('now-btn') as HTMLButtonElement
+  const handle    = document.getElementById('sheet-handle') as HTMLElement
+  const panel     = document.getElementById('filter-panel') as HTMLElement
+  const sheetBody = document.getElementById('sheet-body') as HTMLElement
+  const nowBtn    = document.getElementById('now-btn') as HTMLButtonElement
   const customTime = document.getElementById('custom-time') as HTMLDivElement
   const dateInput = document.getElementById('date-input') as HTMLInputElement
   const timeInput = document.getElementById('time-input') as HTMLInputElement
-  const costBtns = document.querySelectorAll<HTMLButtonElement>('.cost-btn')
-  const durBtns = document.querySelectorAll<HTMLButtonElement>('.dur-btn')
-  const statusEl = document.getElementById('current-status')
+  const statusEl  = document.getElementById('current-status')
+  const costBtns  = document.querySelectorAll<HTMLButtonElement>('.cost-btn')
+  const durBtns   = document.querySelectorAll<HTMLButtonElement>('.dur-btn')
 
   // Initialise date/time inputs to now
   const now = new Date()
   dateInput.value = now.toISOString().slice(0, 10)
   timeInput.value = now.toTimeString().slice(0, 5)
 
+  // ── Sheet collapse / expand (mobile only) ────────────────
+  function setSheetOpen(open: boolean): void {
+    panel.classList.toggle('open', open)
+    handle.setAttribute('aria-expanded', String(open))
+    handle.setAttribute('aria-label', open ? 'Hide parking filters' : 'Show parking filters')
+    sheetBody.setAttribute('aria-hidden', String(!open))
+  }
+
+  handle.addEventListener('click', () => {
+    const isOpen = panel.classList.contains('open')
+    setSheetOpen(!isOpen)
+  })
+
+  handle.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      handle.click()
+    }
+  })
+
+  // ── Status text ───────────────────────────────────────────
   function updateStatus(): void {
     if (!statusEl) return
     const dt = currentFilter.datetime
-    const timeStr = dt.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
-    const dayStr = dt.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })
-    statusEl.textContent = useNow ? `Right now · ${timeStr}` : `${dayStr} · ${timeStr}`
+
+    if (!useNow) {
+      const dayStr  = dt.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })
+      const timeStr = dt.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
+      statusEl.textContent = `${dayStr} · ${timeStr}`
+      return
+    }
+
+    const iso         = dt.toISOString().slice(0, 10)
+    const isBankHol   = BANK_HOLIDAYS.has(iso)
+    const hours       = dt.getHours() + dt.getMinutes() / 60
+    const isRestricted = !isBankHol && hours >= 8 && hours < 20
+
+    if (isRestricted) {
+      statusEl.innerHTML =
+        `<span class="status-chip paid" aria-label="Paid parking">Paid</span> parking until 8:00 PM`
+    } else if (isBankHol) {
+      statusEl.innerHTML =
+        `<span class="status-chip free" aria-label="Free parking">Free</span> — bank holiday`
+    } else if (hours < 8) {
+      statusEl.innerHTML =
+        `<span class="status-chip free" aria-label="Free parking">Free</span> until 8:00 AM`
+    } else {
+      statusEl.innerHTML =
+        `<span class="status-chip free" aria-label="Free parking">Free</span> from 8:00 PM`
+    }
+  }
+
+  function setPressed(btn: HTMLButtonElement, pressed: boolean): void {
+    btn.classList.toggle('active', pressed)
+    btn.setAttribute('aria-pressed', String(pressed))
   }
 
   function emit(): void {
@@ -40,10 +93,10 @@ export function initFilterPanel(callback: FilterChangeCallback): void {
     onChange({ ...currentFilter })
   }
 
-  // Right Now toggle
+  // ── Right Now toggle ──────────────────────────────────────
   nowBtn.addEventListener('click', () => {
     useNow = !useNow
-    nowBtn.classList.toggle('active', useNow)
+    setPressed(nowBtn, useNow)
     customTime.hidden = useNow
 
     if (useNow) {
@@ -65,22 +118,22 @@ export function initFilterPanel(callback: FilterChangeCallback): void {
     emit()
   }
 
-  // Cost buttons
+  // ── Cost buttons ──────────────────────────────────────────
   costBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      costBtns.forEach(b => b.classList.remove('active'))
-      btn.classList.add('active')
+      costBtns.forEach(b => setPressed(b, false))
+      setPressed(btn, true)
       const val = btn.dataset.value
       currentFilter.maxCost = val === '' ? null : Number(val)
       emit()
     })
   })
 
-  // Duration buttons
+  // ── Duration buttons ──────────────────────────────────────
   durBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      durBtns.forEach(b => b.classList.remove('active'))
-      btn.classList.add('active')
+      durBtns.forEach(b => setPressed(b, false))
+      setPressed(btn, true)
       currentFilter.durationMinutes = Number(btn.dataset.value)
       emit()
     })
